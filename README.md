@@ -1,4 +1,2 @@
-# DynamicWebClassNotes
+# Dynamic Web Class Notes & Assignment
 Dynamic Web. Spring 2025
-
-## changes
