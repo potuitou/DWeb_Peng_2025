@@ -1,6 +1,7 @@
 import './components/RecipeCard.css'
 //this is how we imort img file data as a js varible
 //taking data and assign it to jsx?
+//export and import only apply to js file as they were modules
 import RECIPE_IMG from './assets/pancake.png'
 import {RECIPE} from './components/recipe-data'
 
