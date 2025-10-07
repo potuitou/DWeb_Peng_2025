@@ -1,6 +1,8 @@
 import React from 'react'
 import Accordion from '../components/AccordionFancy'
 
+//place holder text for now
+
 const ITEMS = [
   {
     id: 'q1',
