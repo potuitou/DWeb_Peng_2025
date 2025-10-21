@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Load the Futura font here so we don't touch index.html */
+@import url('https://fonts.cdnfonts.com/css/futura-std-4');
+
+:root {
+  --app-radius: 24px;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Futura Std', sans-serif;
+  background: #f5f6f7;
+}
+
+/* Glass UI helpers used by the navbar bar and main card area */
+.glass {
+  @apply backdrop-blur-md bg-white/40 shadow-[0_4px_20px_0_rgba(0,0,0,0.25)] rounded-[24px];
+}
+.glass-dim {
+  @apply backdrop-blur-md bg-white/30 shadow-[0_4px_20px_0_rgba(0,0,0,0.25)] rounded-[24px];
+}
+
+/* Make images behave nicely inside cards */
+.product-img {
+  @apply w-full h-full object-contain mix-blend-multiply;
+}
