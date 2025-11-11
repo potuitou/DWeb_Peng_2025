@@ -1,19 +1,17 @@
-//useCallback: store mutable references; useState: track busy state; useCallback: memorize function; useEffect: used to clean when component unmount
-import { useCallback, useEffect, useRef, useState } from 'react';
+//useRef: store mutable references; useCallback: memorize function; useEffect: used to clean when component unmount
+import { useCallback, useEffect, useRef } from 'react';
 //generateDescription: call OpenAI GPT to generate text; textToSpeech: Call OpenAI TTS to convert text to audio
 import { generateDescription, textToSpeech } from '../api';
 
 export default function useLLMAudio() {
     //store audio element
     const audioRef = useRef(null);
-    //store the audio coming from API
+    //store the Blob URL coming from API
     const urlRef = useRef(null);
     //store AbortController
     const controllerRef = useRef(null);
-    //get ID counter
+    //request ID counter for race condition prevention
     const reqIdRef = useRef(0);
-    //track if the audio is now playing
-    const [isBusy, setIsBusy] = useState(false);
 
     //abort the ongoing api request
     const abort = () => {
@@ -22,7 +20,7 @@ export default function useLLMAudio() {
     };
 
     //clean up all the resources
-    const cleanup = useCallback((keepBusy = false) => {
+    const cleanup = useCallback(() => {
         abort();
         if (audioRef.current) {
             audioRef.current.pause();
@@ -33,12 +31,11 @@ export default function useLLMAudio() {
             URL.revokeObjectURL(urlRef.current);
             urlRef.current = null;
         }
-        if (!keepBusy) setIsBusy(false);
     }, []);
 
     //Stop the audio
     const stop = useCallback(() => {
-        // Invalidate any on-going tasks and stop audio
+        //Invalidate any on-going tasks and stop audio
         reqIdRef.current += 1;
         cleanup();
     }, [cleanup]);
@@ -46,9 +43,8 @@ export default function useLLMAudio() {
     //Audio speak
     const speak = useCallback(async ({ name, category }) => {
         const myId = ++reqIdRef.current;
-        // Clear any currently playing audio but keep busy state until we resolve.
-        cleanup(true);
-        setIsBusy(true);
+        //Clear any currently playing audio
+        cleanup();
 
         const controller = new AbortController();
         controllerRef.current = controller;
@@ -69,12 +65,11 @@ export default function useLLMAudio() {
             const audio = new Audio(url);
             audioRef.current = audio;
 
-            //set up cleanup when audio finished by check if the audio is the current one
+            //set up cleanup when audio finished by checking if the audio is still the current one
             audio.onended = () => {
-                // Only clean up if this audio is still the active one.
                 if (myId === reqIdRef.current) cleanup();
             };
-            
+
             await audio.play();
         } catch (err) {
             if (!controller.signal.aborted) {
@@ -87,5 +82,5 @@ export default function useLLMAudio() {
     //Auto-cleanup if the component using this hook unmounts
     useEffect(() => () => stop(), [stop]);
 
-    return { speak, stop, isBusy };
+    return { speak, stop };
 }

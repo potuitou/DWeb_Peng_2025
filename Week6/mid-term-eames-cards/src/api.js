@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
 
+//generate product description through api call
 export const generateDescription = async ({ name, category, signal }) => {
     const res = await axios.post(
         'https://api.openai.com/v1/chat/completions',

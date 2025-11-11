@@ -1,7 +1,10 @@
 import React from "react";
 import cx from "classnames";
 
+//Define the behavior of a product card
+//item will take - item.image(URL of the img), item.name(name of the product)
 export default function ProductCard({ item, selected, onSelect, className }) {
+    //always show
     const base =
         "flex h-full w-full min-w-0 flex-col justify-between rounded-[24px] border p-6 backdrop-blur-md shadow-[0_4px_20px_0_rgba(0,0,0,0.25)] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2";
     const hover =
